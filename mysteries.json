@@ -8,12 +8,12 @@
       {"name": "Childhood Friend", "relation": "Neighbor", "phone": "555-0178", "bio": "Has known Jarra for 15 years. Recently started asking if she's seeing anyone."}
     ],
     "matrix": {
-      "suspects": ["Sean", "Richard", "Childhood Friend"],
+      "suspects": ["Sean", "Richard", "Chris"],
       "motives": ["Secret Crush", "Work Promotion", "Long-term Love"],
       "locations": ["Le mer del amor", "The Office", "The Neighborhood Cafe"]
     },
     "solution": {
-      "culprit": "Childhood Friend",
+      "culprit": "Chris",
       "motive": "Long-term Love",
       "location": "Le mer del amor"
     }
