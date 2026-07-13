@@ -1,0 +1,20 @@
+{
+  "2026-07-13": {
+    "story": "Upon waking up this morning, Jarra received a text from a secret admirer: 'Dearest lovely Jarra, meet me at Le mer del amor by the Seine at 8:00...'",
+    "suspects": [
+      {"name": "Sean", "relation": "Office Colleague", "phone": "555-0192", "bio": "Works in accounting. Always leaves an extra coffee at her desk, but claims it's a mistake."},
+      {"name": "Richard", "relation": "Manager", "phone": "555-0144", "bio": "Spoke to Jarra for an hour yesterday about 'work-life balance' and recommended romantic restaurants."},
+      {"name": "Childhood Friend", "relation": "Neighbor", "phone": "555-0178", "bio": "Has known Jarra for 15 years. Recently started asking if she's seeing anyone."}
+    ],
+    "matrix": {
+      "suspects": ["Sean", "Richard", "Childhood Friend"],
+      "motives": ["Secret Crush", "Work Promotion", "Long-term Love"],
+      "locations": ["Le mer del amor", "The Office", "The Neighborhood Cafe"]
+    },
+    "solution": {
+      "culprit": "Childhood Friend",
+      "motive": "Long-term Love",
+      "location": "Le mer del amor"
+    }
+  }
+}
