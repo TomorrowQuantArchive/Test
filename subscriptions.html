@@ -1,0 +1,411 @@
+{{ 'template-collection.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+<!-- Load elegant Serif Font for Subscription branding -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+{% if section.settings.image_shape == 'blob' %}
+  {{ 'mask-blobs.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
+
+{%- unless section.settings.quick_add == 'none' -%}
+  {{ 'quick-add.css' | asset_url | stylesheet_tag }}
+{%- endunless -%}
+
+{%- if section.settings.quick_add == 'standard' -%}
+  <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- style -%}
+  /* Overriding the harsh header banner strip globally on this page context */
+  .collection-hero, 
+  [class*="hero-banner"],
+  .main-collection-banner {
+    background: linear-gradient(90deg, #d61c4e 0%, #ff4d79 100%) !important;
+  }
+
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    
+    /* Brighter romantic red base with a gorgeous, repeating CSS-embedded lace/floral damask pattern */
+    background-color: #500114;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 10c-2.5 0-4.5-2-4.5-4.5S27.5 1 30 1s4.5 2 4.5 4.5S32.5 10 30 10zm0 40c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5zM10 30c0-2.5 2-4.5 4.5-4.5S19 27.5 19 30s-2 4.5-4.5 4.5S10 32.5 10 30zm40 0c0-2.5 2-4.5 4.5-4.5S59 27.5 59 30s-2 4.5-4.5 4.5S50 32.5 50 30zM30 22c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 13c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2 5 5-2.2 5-5 5z' fill='%23ff4d79' fill-opacity='0.12' fill-rule='evenodd'/%3E%3C/svg%3E");
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  /* Force grid list to act as a flex container so we can manually control tier ordering via CSS */
+  .subscription-product-grid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: var(--grid-desktop-horizontal-spacing, 30px);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    justify-content: center;
+  }
+
+  /* Target exact custom classes to cleanly sequence packages */
+  .tier-order-base { order: 1 !important; }
+  .tier-order-lovers { order: 2 !important; }
+  .tier-order-amour { order: 3 !important; }
+  .tier-order-fallback { order: 4 !important; }
+
+  /* Adjust item widths inside the layout flexbox context */
+  .subscription-product-grid .grid__item {
+    width: calc(33.333% - 20px) !important;
+    max-width: 100% !important;
+  }
+
+  @media screen and (max-width: 989px) {
+    .subscription-product-grid .grid__item {
+      width: calc(50% - 15px) !important;
+    }
+  }
+  @media screen and (max-width: 749px) {
+    .subscription-product-grid .grid__item {
+      width: 100% !important;
+    }
+  }
+
+  /* Subscription Layout & Theme Overrides */
+  .subscription-grid-header {
+    text-align: center;
+    margin-bottom: 50px;
+    margin-top: 20px;
+  }
+
+  .subscription-main-title {
+    font-family: 'Playfair Display', Georgia, serif !important;
+    color: #ffffff !important;
+    font-size: 3.5rem !important;
+    font-style: italic;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 12px rgba(255, 77, 121, 0.4);
+  }
+
+  .subscription-subtitle {
+    color: #ffccd5;
+    font-size: 1.25rem;
+    font-weight: 300;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* Brighter Red / Pink Romantic Tier Card Wrappers with Scalloped Lace Styling */
+  .subscription-card-override {
+    background: linear-gradient(135deg, #910c2d 0%, #540216 100%) !important;
+    border: 3px dashed #ff4d79 !important;
+    outline: 6px solid rgba(255, 77, 121, 0.15);
+    border-radius: 24px !important;
+    padding: 28px !important;
+    box-shadow: 0 15px 45px rgba(214, 28, 78, 0.35) !important;
+    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .subscription-card-override:hover {
+    transform: translateY(-10px);
+    border-style: solid !important;
+    border-color: #ffccd5 !important;
+    outline: 8px solid rgba(255, 204, 213, 0.25);
+    box-shadow: 0 22px 60px rgba(255, 77, 121, 0.5) !important;
+  }
+
+  /* Beautiful Premium Badge Header Row */
+  .subscription-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(90deg, rgba(214, 28, 78, 0.5) 0%, rgba(255, 77, 121, 0.15) 100%);
+    padding: 12px 18px;
+    border-radius: 14px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255, 77, 121, 0.3);
+  }
+
+  .subscription-logo-svg {
+    width: 28px;
+    height: 28px;
+    fill: #ffccd5 !important;
+    filter: drop-shadow(0 2px 4px rgba(214, 28, 78, 0.5));
+    flex-shrink: 0;
+  }
+
+  .subscription-tier-name {
+    font-family: 'Playfair Display', Georgia, serif !important;
+    color: #ffffff !important;
+    font-size: 1.5rem !important;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .subscription-card-override .card__heading,
+  .subscription-card-override .card-product .card__inner + .card__content {
+    display: none !important;
+  }
+
+  .subscription-bundle-desc {
+    color: #ffccd5 !important;
+    font-size: 1.05rem !important;
+    margin: 20px 0 10px 0;
+    line-height: 1.5;
+    font-weight: 300;
+    text-align: center;
+  }
+
+  .subscription-card-override .price {
+    color: #ffffff !important;
+    font-size: 1.3rem !important;
+    margin: 15px 0;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+  }
+  
+  .subscription-card-override .price * {
+    color: #ffffff !important;
+  }
+
+  .subscription-card-override .button,
+  .subscription-card-override .quick-add__submit {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    background: #ffffff !important;
+    color: #8a052b !important;
+    height: 46px !important;
+    min-width: 100% !important;
+    font-size: 0.95rem !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.5px !important;
+    border: 0px none transparent !important;
+    outline: 0px none transparent !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    border-radius: 30px !important;
+    cursor: pointer !important;
+    margin-top: auto;
+    transition: all 0.25s ease-in-out !important;
+  }
+
+  .subscription-card-override .button:hover,
+  .subscription-card-override .quick-add__submit:hover {
+    background: #ff4d79 !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 6px 20px rgba(255, 77, 121, 0.7) !important;
+  }
+{%- endstyle -%}
+
+<collection-component
+  view-event-payload="{{ collection | standard_event_data: 'view' | escape }}"
+  data-collection-id="{{ collection.id }}"
+>
+  <div class="section-{{ section.id }}-padding">
+    
+    <div class="subscription-grid-header page-width">
+      <h2 class="subscription-main-title">Our Subscriptions</h2>
+      <p class="subscription-subtitle">Exquisite love mysteries, beautifully prepared and delivered directly to your door via classic snail mail.</p>
+    </div>
+
+    {%- paginate collection.products by section.settings.products_per_page -%}
+      <div class="page-width">
+        <div class="product-grid-container" id="ProductGridContainer">
+          {%- if collection.products.size == 0 -%}
+            <div class="collection collection--empty center" id="product-grid" data-id="{{ section.id }}">
+              <h2 class="title title--primary" style="color: white;">No subscription packages found.</h2>
+            </div>
+          {%- else -%}
+            <div class="collection">
+              <ul id="product-grid" data-id="{{ section.id }}" class="subscription-product-grid">
+                
+                {% assign skip_card_product_styles = false %}
+                {%- for product in collection.products -%}
+                  
+                  {% assign lowercase_title = product.title | downcase %}
+                  {% assign current_tier_title = product.title %}
+                  {% assign current_tier_desc = "Premium interactive mystery bundles sent directly by post." %}
+                  {% assign tier_order_class = "tier-order-fallback" %}
+
+                  {% if lowercase_title contains '3' or lowercase_title contains 'base' %}
+                    {% assign current_tier_title = "Base Package" %}
+                    {% assign current_tier_desc = "3 Love Mysteries sent beautifully by romantic snail mail every single month." %}
+                    {% assign tier_order_class = "tier-order-base" %}
+                    {% capture custom_logo %}
+                      <svg class="subscription-logo-svg" viewBox="0 0 24 24">
+                        <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/>
+                      </svg>
+                    {% endcapture %}
+                  {% elsif lowercase_title contains '5' or lowercase_title contains 'lover' %}
+                    {% assign current_tier_title = "Lover's Package" %}
+                    {% assign current_tier_desc = "5 Love Mysteries curated into an expanded monthly premium bundle dispatch." %}
+                    {% assign tier_order_class = "tier-order-lovers" %}
+                    {% capture custom_logo %}
+                      <svg class="subscription-logo-svg" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.5 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                      </svg>
+                    {% endcapture %}
+                  {% elsif lowercase_title contains '10' or lowercase_title contains 'amour' %}
+                    {% assign current_tier_title = "Amour's Arrow Package" %}
+                    {% assign current_tier_desc = "The ultimate bundle of 10 spectacular monthly love mysteries for true investigators." %}
+                    {% assign tier_order_class = "tier-order-amour" %}
+                    {% capture custom_logo %}
+                      <svg class="subscription-logo-svg" viewBox="0 0 24 24">
+                        <path d="M9.5 2c-1.38 0-2.5 1.12-2.5 2.5S8.12 7 9.5 7 12 5.88 12 4.5 10.88 2 9.5 2zM2 22l6-6-2-2-4 4v4h4zm14.12-14.12l-1.42 1.42-3.12-3.12 1.42-1.42 3.12 3.12zm5.71-3.71c-.39-.39-1.02-.39-1.41 0l-2.12 2.12 3.54 3.54 2.12-2.12c.39-.39.39-1.02 0-1.41l-2.13-2.13zM6.91 10.03l7.06-7.06 3.12 3.12-7.06 7.06-3.12-3.12z"/>
+                      </svg>
+                    {% endcapture %}
+                  {% else %}
+                    {% capture custom_logo %}
+                      <svg class="subscription-logo-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    {% endcapture %}
+                  {% endif %}
+
+                  <li class="grid__item subscription-card-override {{ tier_order_class }}">
+                    <div>
+                      <div class="subscription-badge-row">
+                        {{ custom_logo }}
+                        <h3 class="subscription-tier-name">{{ current_tier_title }}</h3>
+                      </div>
+
+                      {% render 'card-product',
+                        card_product: product,
+                        media_aspect_ratio: section.settings.image_ratio,
+                        image_shape: section.settings.image_shape,
+                        show_secondary_image: section.settings.show_secondary_image,
+                        show_vendor: section.settings.show_vendor,
+                        show_rating: section.settings.show_rating,
+                        lazy_load: false,
+                        skip_styles: skip_card_product_styles,
+                        quick_add: section.settings.quick_add,
+                        section_id: section.id,
+                        product_view_context: 'collection'
+                      %}
+                    </div>
+
+                    <div>
+                      <p class="subscription-bundle-desc">{{ current_tier_desc }}</p>
+                      {% render 'price', product: product, use_variant: true, show_badges: false %}
+                    </div>
+                  </li>
+                  {%- assign skip_card_product_styles = true -%}
+                {%- endfor -%}
+
+              </ul>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endpaginate -%}
+  </div>
+</collection-component>
+
+{% schema %}
+{
+  "name": "Subscription Grid Tiers",
+  "class": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 36,
+      "step": 4,
+      "default": 16,
+      "label": "Products per page"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        { "value": "adapt", "label": "Adapt" },
+        { "value": "portrait", "label": "Portrait" },
+        { "value": "square", "label": "Square" }
+      ],
+      "default": "square",
+      "label": "Image Ratio"
+    },
+    {
+      "type": "select",
+      "id": "image_shape",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "round", "label": "Round" }
+      ],
+      "default": "default",
+      "label": "Image Shape"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "default": false,
+      "label": "Show secondary image on hover"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "Show Vendor"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "default": false,
+      "label": "Show Rating"
+    },
+    {
+      "type": "select",
+      "id": "quick_add",
+      "default": "standard",
+      "label": "Quick Add Layout",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "standard", "label": "Standard Pill" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}
