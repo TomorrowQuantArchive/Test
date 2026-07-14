@@ -1,0 +1,297 @@
+{{ 'section-main-page.css' | asset_url | stylesheet_tag }}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    background: #3c0010; /* Soft dark wine background tone */
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  /* Elegant Serif Font Layout Override */
+  .romantic-title {
+    font-family: 'Playfair Display', Georgia, serif !important;
+    color: #ffffff !important;
+    text-align: center;
+    font-style: italic;
+    font-size: 3rem !important;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+
+  .romantic-form-subtitle {
+    text-align: center;
+    color: #ffb3c6;
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+
+  /* Beautiful Burgundy To Rose Glassmorphism Container */
+  .contact-form-wrapper {
+    max-width: 650px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #5c001a 0%, #33000d 100%);
+    border: 2px solid #e05275;
+    box-shadow: 0 15px 50px rgba(224, 82, 117, 0.15);
+    border-radius: 20px;
+    padding: 45px 40px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .contact-form-wrapper {
+      padding: 30px 20px;
+    }
+  }
+
+  .contact-fields-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 25px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .contact-fields-row {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+
+  .contact-field-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 25px;
+  }
+
+  /* Soft pink text labels */
+  .contact-field-group label {
+    font-size: 0.95rem;
+    color: #ffb3c6;
+    margin-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+
+  /* Premium Velvet-smooth Form Inputs */
+  .contact-input-element {
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.07) !important;
+    border: 1px solid rgba(224, 82, 117, 0.4) !important;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    color: #ffffff !important;
+    font-family: inherit;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  /* Style custom inputs placeholder text */
+  .contact-input-element::placeholder {
+    color: rgba(255, 179, 198, 0.4) !important;
+  }
+
+  /* Glowing hover/focus ring actions */
+  .contact-input-element:focus,
+  .contact-input-element:hover {
+    outline: none !important;
+    border-color: #ff5c8a !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 0 12px rgba(224, 82, 117, 0.5), inset 0 1px 3px rgba(0,0,0,0.2) !important;
+  }
+
+  /* Action Submission Button Positioning */
+  .contact-submit-container {
+    text-align: center;
+    margin-top: 35px;
+  }
+
+  /* Romantic Glowing Pill Button Reset */
+  .contact-submit-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff !important;
+    color: #8a052b !important;
+    padding: 15px 50px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border: none !important;
+    outline: none !important;
+    border-radius: 30px !important;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    transition: all 0.25s ease-in-out;
+  }
+
+  .contact-submit-btn:hover {
+    background: #e05275 !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 25px rgba(224, 82, 117, 0.6) !important;
+  }
+
+  .contact-submit-btn:active {
+    transform: translateY(0px) scale(0.98);
+  }
+
+  /* Custom Status Message Boxes */
+  .form-status-message {
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    font-size: 1.05rem;
+    text-align: center;
+    font-weight: 500;
+  }
+  .form-status-success {
+    background-color: rgba(12, 166, 120, 0.2);
+    color: #37f0ba;
+    border: 1px solid rgba(12, 166, 120, 0.4);
+  }
+  .form-status-error {
+    background-color: rgba(240, 62, 62, 0.2);
+    color: #ff8787;
+    border: 1px solid rgba(240, 62, 62, 0.4);
+  }
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}-padding">
+  <div class="page-width page-width--narrow">
+    
+    <h1 class="romantic-title">
+      {{ page.title | escape }}
+    </h1>
+    <p class="romantic-form-subtitle">Have questions or found a clue? Reach out to us below.</p>
+    
+    <div class="rte" style="display:none;">
+      {{ page.content }}
+    </div>
+
+    <div class="contact-form-wrapper">
+      {%- form 'contact', id: 'ContactForm', class: 'isolate' -%}
+        
+        {%- if form.posted_successfully? -%}
+          <div class="form-status-message form-status-success" tabindex="-1" autofocus>
+            ❤️ Your love letter has been cast to the sea! We will safely respond to your inquiry shortly.
+          </div>
+        {%- endif -%}
+        
+        {%- if form.errors -%}
+          <div class="form-status-message form-status-error">
+            💔 Something went wrong. Check your details and try sending again.
+          </div>
+        {%- endif -%}
+
+        <div class="contact-fields-row">
+          <div class="contact-field-group">
+            <label for="ContactForm-name">Your Name</label>
+            <input
+              class="contact-input-element"
+              type="text"
+              id="ContactForm-name"
+              name="contact[Name]"
+              value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+              placeholder="e.g. Detective Holmes"
+              required
+            >
+          </div>
+          <div class="contact-field-group">
+            <label for="ContactForm-email">Your Email *</label>
+            <input
+              class="contact-input-element"
+              type="email"
+              id="ContactForm-email"
+              name="contact[email]"
+              autocomplete="email"
+              autocorrect="off"
+              autocapitalize="off"
+              value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+              aria-required="true"
+              placeholder="detective@gmail.com"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="contact-field-group">
+          <label for="ContactForm-subject">Subject of Inquiry</label>
+          <input
+            class="contact-input-element"
+            type="text"
+            id="ContactForm-subject"
+            name="contact[Inquiry Type]"
+            placeholder="e.g. General Question, Mystery Feedback"
+          >
+        </div>
+
+        <div class="contact-field-group">
+          <label for="ContactForm-body">Your Message *</label>
+          <textarea
+            rows="8"
+            id="ContactForm-body"
+            class="contact-input-element"
+            name="contact[body]"
+            placeholder="Write your message here..."
+            required
+          >{%- if form.body -%}{{ form.body }}{%- endif -%}</textarea>
+        </div>
+
+        <div class="contact-submit-container">
+          <button type="submit" class="contact-submit-btn">
+            Send Message
+          </button>
+        </div>
+
+      {%- endform -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main-page.name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}
