@@ -1,7 +1,7 @@
 <div class="mystery-hero-container">
-  <div class="mystery-card">
+  <div class="mystery-main-layout">
     <h2 id="case-title" class="mystery-title">Today's Love Mystery</h2>
-    <hr>
+    <hr class="mystery-divider">
     
     <div class="mystery-split-layout">
       
@@ -11,7 +11,25 @@
         </div>
 
         <h3 class="section-title">Suspect Dossiers</h3>
-        <div id="suspects-container" class="suspects-grid"></div>
+        <div id="suspects-container" class="suspects-vertical-list"></div>
+
+        <h3 class="section-title">Locations Under Watch</h3>
+        <div id="locations-container" class="locations-vertical-list"></div>
+
+        <h3 class="section-title">Possible Motives</h3>
+        <div id="motives-container" class="motives-vertical-list"></div>
+
+        <div class="clues-evidence-notebook">
+          <h3 class="notebook-title">Clues & Evidence</h3>
+          <ul id="clues-list" class="notebook-list">
+            <li>An Aries was in the Amazon river. Typical Aries.</li>
+            <li>Either Viscount Eminence brought a steak knife or Viscount Eminence was under the life vests. (But not both!)</li>
+            <li>Whoever wanted to fight for the revolution had brown hair.</li>
+            <li>An anonymous source that Logico trusted passed him a message that read: <strong>GSV KVIHLM DRGS Z URHSRMT HKVZI DZMGVW GL SRWV ZM ZUUZRI</strong> (Atbash Cipher decoded: <em>"THE PERSON WITH A FISHING SPEAR WANTED TO HIDE AN AFFAIR"</em>).</li>
+            <li>A suspect clearly planning to silence a witness was found indoors.</li>
+            <li class="red-clue">A toxic blowfish was used to commit the murder.</li>
+          </ul>
+        </div>
       </div>
 
       <div class="mystery-workspace-pane">
@@ -23,268 +41,340 @@
         </div>
         
         <div class="guess-zone">
-            <div id="submit-guess" class="button button--primary" role="button" tabindex="0">
-                Submit Final Accusation
-            </div>
-            </div>
+          <div id="submit-guess" class="button button--primary" role="button" tabindex="0">
+            Submit Final Accusation
+          </div>
+        </div>
       </div>
 
     </div>
   </div>
+
   <div id="mystery-modal" class="mystery-modal-overlay">
-  <div class="mystery-modal-content">
-    <div id="modal-icon" class="modal-heart-icon">❤️</div>
-    <h3 id="modal-title">Deduction Successful</h3>
-    <p id="modal-message">Message goes here...</p>
-    <button id="modal-close-btn" class="modal-btn">Continue</button>
+    <div class="mystery-modal-content">
+      <div id="modal-icon" class="modal-heart-icon">❤️</div>
+      <h3 id="modal-title">Deduction Successful</h3>
+      
+      <div id="modal-score-container" class="modal-score-container" style="display: none;">
+        <div class="score-radial-wrapper">
+          Deduction Accuracy: <span id="modal-score-percentage" class="score-percent">0%</span>
+        </div>
+        <div class="score-checklist">
+          <div id="check-culprit" class="check-item">Culprit: <span>❓</span></div>
+          <div id="check-motive" class="check-item">Motive: <span>❓</span></div>
+          <div id="check-location" class="check-item">Location: <span>❓</span></div>
+        </div>
+      </div>
+
+      <p id="modal-message">Message goes here...</p>
+      
+      <p id="modal-temptation-text" class="modal-temptation-text"></p>
+
+      <button id="modal-close-btn" class="modal-btn">Continue</button>
+    </div>
   </div>
 </div>
-</div>
+
+<div id="shopify-settings-data" 
+     data-tempt-text="{{ section.settings.temptation_text | escape }}" 
+     style="display:none;"></div>
 
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Rockwell&display=swap');
+
+  /* Container Background Setup - No Wrapper Box */
   .mystery-hero-container {
-    background: linear-gradient(180deg, #8a052b 0%, #4a0014 100%); 
+    background: linear-gradient(180deg, #6b001a 0%, #250007 100%); 
     color: #ffffff;
     padding: 60px 20px;
-    font-family: 'Assistant', 'Helvetica Neue', sans-serif;
+    font-family: 'Rockwell', 'Courier New', serif;
     display: flex;
     justify-content: center;
     position: relative;
     overflow: hidden;
   }
-  .mystery-card {
-    max-width: 1200px; /* Widened to fit side-by-side content comfortably */
+  
+  .mystery-main-layout {
+    max-width: 1200px; 
     width: 100%;
-    background: rgba(255, 255, 255, 0.08); 
-    backdrop-filter: blur(10px);
-    padding: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    /* Entire section sits directly on top of the main background styling */
   }
 
-/* Modal Overlay Styling */
-.mystery-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(4a, 0, 20, 0.65); /* Rich dark burgundy tinted opacity */
-  backdrop-filter: blur(8px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-}
-
-.mystery-modal-overlay.is-active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* Modal Window Content Box */
-.mystery-modal-content {
-  background: linear-gradient(135deg, #5c001a 0%, #33000d 100%);
-  border: 2px solid #e05275;
-  box-shadow: 0 15px 50px rgba(224, 82, 117, 0.35);
-  border-radius: 20px;
-  padding: 40px;
-  max-width: 450px;
-  width: 90%;
-  text-align: center;
-  transform: scale(0.85);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.mystery-modal-overlay.is-active .mystery-modal-content {
-  transform: scale(1);
-}
-
-/* Icons and Text Typography inside Modal */
-.modal-heart-icon {
-  font-size: 3.5rem;
-  margin-bottom: 15px;
-  display: inline-block;
-  animation: modalHeartBeat 1.5s infinite ease-in-out;
-}
-
-#modal-title {
-  color: #ffffff;
-  font-size: 1.6rem;
-  font-family: 'Assistant', sans-serif;
-  letter-spacing: 1px;
-  margin: 0 0 15px 0;
-  text-transform: uppercase;
-}
-
-#modal-message {
-  color: #ffb3c6;
-  font-size: 1.05rem;
-  line-height: 1.6;
-  margin: 0 0 30px 0;
-}
-
-/* Modal Close Button */
-.modal-btn {
-  background: #ffffff;
-  color: #8a052b;
-  border: none;
-  padding: 10px 30px;
-  font-size: 0.95rem;
-  font-weight: bold;
-  border-radius: 25px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
-}
-
-.modal-btn:hover {
-  background: #e05275;
-  color: #ffffff;
-  box-shadow: 0 6px 15px rgba(224, 82, 117, 0.5);
-  transform: translateY(-2px);
-}
-
-/* Romantic Pulsing Heart Animation */
-@keyframes modalHeartBeat {
-  0%, 100% { transform: scale(1); }
-  25% { transform: scale(1.12); }
-  40% { transform: scale(1.05); }
-  60% { transform: scale(1.15); }
-}
+  /* Typography Override */
+  .mystery-title, 
+  .section-title, 
+  .suspect-card h4, 
+  .matrix-table th,
+  .clues-evidence-notebook h3,
+  #modal-title {
+    font-family: 'Rockwell', 'Georgia', serif !important;
+  }
 
   .mystery-title {
-    color: #ffffff;
-    font-size: 2rem;
+    color: #ff85a2;
+    font-size: 2.5rem;
     text-align: center;
     margin-bottom: 20px;
-  }
-  .mystery-card hr {
-    border: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    margin-bottom: 25px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.4);
   }
 
-  /* Two Column Responsive Split System */
+  .mystery-divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 77, 109, 0.5), transparent);
+    margin-bottom: 35px;
+  }
+
+  /* Split Layout */
   .mystery-split-layout {
     display: flex;
-    gap: 30px;
+    gap: 40px;
     align-items: flex-start;
   }
+  
+  /* Scrollable Left Info Pane */
   .mystery-info-pane {
-    flex: 1;
-    max-height: 700px; /* Restricts height to create independent scrolling */
+    flex: 1.2;
+    max-height: 850px; 
     overflow-y: auto;
-    padding-right: 15px;
+    padding-right: 25px;
   }
-  /* Elegant scrollbar styling for the info panel */
+  
   .mystery-info-pane::-webkit-scrollbar {
     width: 6px;
   }
   .mystery-info-pane::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 77, 109, 0.05);
     border-radius: 4px;
   }
   .mystery-info-pane::-webkit-scrollbar-thumb {
-    background: rgba(220, 82, 117, 0.4);
+    background: rgba(255, 77, 109, 0.4);
     border-radius: 4px;
   }
+  
+  /* Sticky Right Workspace Panel */
   .mystery-workspace-pane {
-    flex: 1;
+    flex: 0.8;
     position: sticky;
     top: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 77, 109, 0.2);
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    backdrop-filter: blur(10px);
   }
 
   .mystery-story {
     font-size: 1.15rem;
-    line-height: 1.7;
-    background: rgba(255, 255, 255, 0.1);
+    line-height: 1.8;
+    background: rgba(107, 0, 26, 0.35);
     padding: 25px;
-    border-radius: 8px;
-    border-left: 5px solid #e05275; 
-    margin-bottom: 30px;
+    border-radius: 12px;
+    border-left: 5px solid #ff4d6d; 
+    margin-bottom: 35px;
+    color: #fff0f5;
   }
+  
   .section-title {
-    color: #ffb3c6; 
+    color: #ff85a2; 
     margin-top: 35px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    font-size: 1.1rem;
-  }
-  .matrix-instruction {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.7);
-    margin-top: -5px;
-    margin-bottom: 15px;
-  }
-  .suspects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
-    margin-bottom: 30px;
-  }
-  .suspect-card {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    transition: transform 0.2s;
-  }
-  .suspect-card:hover {
-    transform: translateY(-3px);
-    background: rgba(255, 255, 255, 0.08);
-  }
-  .suspect-card h4 {
-    color: #ffffff;
-    font-size: 1.1rem;
-    margin-top: 0;
-    margin-bottom: 8px;
-  }
-  .suspect-card p {
-    color: #f0f0f0;
-    font-size: 0.85rem;
-    line-height: 1.4;
-    margin: 4px 0;
+    font-size: 1.25rem;
+    border-bottom: 1px solid rgba(255, 77, 109, 0.25);
+    padding-bottom: 8px;
+    margin-bottom: 20px;
   }
 
-  /* Interactive Grid Matrix Elements */
+  /* Vertical Card Lists (Suspects, Locations, Motives) */
+  .suspects-vertical-list,
+  .locations-vertical-list,
+  .motives-vertical-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 35px;
+  }
+  
+  /* Shared Dossier Base Cards */
+  .suspect-card, .location-card, .motive-card {
+    background: rgba(107, 0, 26, 0.25);
+    padding: 20px;
+    border: 1px solid rgba(255, 77, 109, 0.2);
+    border-radius: 12px;
+    transition: all 0.25s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    backdrop-filter: blur(5px);
+  }
+  
+  .suspect-card:hover, .location-card:hover, .motive-card:hover {
+    transform: translateY(-2px);
+    background: rgba(107, 0, 26, 0.4);
+    border-color: #ff4d6d;
+    box-shadow: 0 5px 15px rgba(255, 77, 109, 0.15);
+  }
+
+  /* Suspect Specific Layouts */
+  .suspect-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  .suspect-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ff4d6d;
+    background-color: #30000a;
+  }
+  .suspect-header h4 {
+    color: #ffffff;
+    font-size: 1.3rem;
+    margin: 0;
+  }
+  .suspect-bio {
+    color: #ffe5ec;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+  .suspect-meta {
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #ffb3c6;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    border-top: 1px solid rgba(255, 77, 109, 0.15);
+    padding-top: 12px;
+    margin-top: auto;
+  }
+  .meta-divider {
+    color: #ff4d6d;
+    padding: 0 4px;
+  }
+  .suspect-relation-badge {
+    background: #ff4d6d;
+    color: #ffffff;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Locations & Motives Card Details */
+  .location-card-title, .motive-card-title {
+    color: #ffffff;
+    font-size: 1.15rem;
+    margin: 0;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .location-card-desc, .motive-card-desc {
+    color: #ffe5ec;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  /* Clues & Evidence Notebook Styling (Matches design in image) */
+  .clues-evidence-notebook {
+    background-color: #fcf6e8;
+    color: #1a1a1a;
+    border: 4px solid #1a1a1a;
+    border-radius: 8px;
+    padding: 30px;
+    margin-top: 45px;
+    box-shadow: 8px 8px 0px #1a1a1a;
+    position: relative;
+  }
+  .notebook-title {
+    color: #1a1a1a !important;
+    text-decoration: underline;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 1.4rem;
+    margin-top: 0;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+    font-weight: bold;
+  }
+  .notebook-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  .notebook-list li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 18px;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+  }
+  .notebook-list li::before {
+    content: "•";
+    position: absolute;
+    left: 5px;
+    top: 0;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: #1a1a1a;
+  }
+  .notebook-list li.red-clue {
+    color: #8a052b;
+  }
+  .notebook-list li.red-clue::before {
+    color: #8a052b;
+  }
+
+  /* Interactive Matrix Board Styling */
+  .matrix-instruction {
+    font-size: 0.85rem;
+    color: rgba(255, 229, 236, 0.8);
+    margin-top: -5px;
+    margin-bottom: 20px;
+  }
   .matrix-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 77, 109, 0.3);
   }
   .matrix-table th, .matrix-table td {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 10px;
+    border: 1px solid rgba(255, 77, 109, 0.15);
+    padding: 12px 10px;
     text-align: center;
     color: #ffffff;
-    position: relative;
   }
   .matrix-table th { 
-    background: rgba(138, 5, 43, 0.6); 
+    background: rgba(107, 0, 26, 0.8); 
+    color: #ffb3c6;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
   }
   .matrix-table tr:nth-child(even) {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 77, 109, 0.03);
   }
 
-  /* Interactive custom logic buttons representing table status items */
+  /* Interaction Cell State Buttons */
   .matrix-cell-btn {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border: 2px dashed rgba(255, 77, 109, 0.4);
     background: transparent;
     cursor: pointer;
     font-size: 1.1rem;
@@ -295,8 +385,8 @@
     transition: all 0.2s ease;
   }
   .matrix-cell-btn:hover {
-    border-color: #e05275;
-    background: rgba(255, 255, 255, 0.05);
+    border-color: #ff4d6d;
+    background: rgba(255, 77, 109, 0.1);
   }
   .matrix-cell-btn.state-correct {
     border-style: solid;
@@ -306,12 +396,157 @@
   }
   .matrix-cell-btn.state-wrong {
     border-style: solid;
-    border-color: #72efdd;
-    background: rgba(114, 239, 221, 0.1);
-    color: #72efdd;
+    border-color: #ffb3c6;
+    background: rgba(255, 179, 198, 0.15);
+    color: #ffb3c6;
   }
 
-  /* Particle FX Layer Styles */
+  /* Custom Guess Button */
+  .guess-zone {
+    margin-top: 25px; 
+    text-align: center;
+  }
+  .guess-zone .button--primary {
+    display: inline-flex !important; 
+    align-items: center;            
+    justify-content: center;        
+    text-align: center;
+    background: #ffffff !important;
+    color: #6b001a !important;
+    padding: 12px 35px;
+    height: 46px;                   
+    min-width: 260px;               
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 0px none transparent !important;
+    outline: 0px none transparent !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important; 
+    border-radius: 30px !important;
+    cursor: pointer;
+    transition: all 0.25s ease-in-out;
+    font-family: 'Rockwell', serif;
+  }
+  .guess-zone .button--primary:hover {
+    background: #ff4d6d !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) scale(1.03); 
+    box-shadow: 0 6px 25px rgba(255, 77, 109, 0.6) !important;
+  }
+
+  /* Score Modal Interface Elements */
+  .mystery-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(48, 0, 10, 0.85); 
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .mystery-modal-overlay.is-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .mystery-modal-content {
+    background: linear-gradient(135deg, #4d0014 0%, #1a0006 100%);
+    border: 2px solid #ff4d6d;
+    box-shadow: 0 15px 50px rgba(255, 77, 109, 0.4);
+    border-radius: 20px;
+    padding: 35px;
+    max-width: 480px;
+    width: 90%;
+    text-align: center;
+    transform: scale(0.85);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .mystery-modal-overlay.is-active .mystery-modal-content {
+    transform: scale(1);
+  }
+  .modal-score-container {
+    background: rgba(107, 0, 26, 0.4);
+    border: 1px solid rgba(255, 77, 109, 0.3);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  .score-radial-wrapper {
+    font-size: 1.1rem;
+    color: #ffe5ec;
+    margin-bottom: 12px;
+    font-weight: bold;
+  }
+  .score-percent {
+    color: #ff4d6d;
+    font-size: 1.5rem;
+    margin-left: 5px;
+  }
+  .score-checklist {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255, 77, 109, 0.15);
+    padding-top: 10px;
+  }
+  .check-item {
+    background: rgba(255, 255, 255, 0.04);
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 77, 109, 0.1);
+    color: #ffe5ec;
+  }
+  .modal-temptation-text {
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #ffb3c6;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    line-height: 1.4;
+  }
+  .modal-heart-icon {
+    font-size: 3.2rem;
+    margin-bottom: 12px;
+    display: inline-block;
+    animation: modalHeartBeat 1.5s infinite ease-in-out;
+  }
+  .modal-btn {
+    background: #ffffff;
+    color: #6b001a;
+    border: none;
+    padding: 10px 30px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    border-radius: 25px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    font-family: 'Rockwell', serif;
+  }
+  .modal-btn:hover {
+    background: #ff4d6d;
+    color: #ffffff;
+    box-shadow: 0 6px 15px rgba(255, 77, 109, 0.5);
+    transform: translateY(-2px);
+  }
+
+  @keyframes modalHeartBeat {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.12); }
+    40% { transform: scale(1.05); }
+    60% { transform: scale(1.15); }
+  }
+
+  /* Particle FX */
   .heart-particle {
     position: absolute;
     z-index: 999;
@@ -320,71 +555,12 @@
     animation: floatUpFade 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   }
   @keyframes floatUpFade {
-    0% {
-      transform: translate(-50%, -50%) scale(0.5) translateY(0);
-      opacity: 1;
-    }
-    100% {
-      transform: translate(-50%, -50%) scale(1.3) translateY(-60px) rotate(15deg);
-      opacity: 0;
-    }
+    0% { transform: translate(-50%, -50%) scale(0.5) translateY(0); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1.3) translateY(-60px) rotate(15deg); opacity: 0; }
   }
 
-/* Matrix Guess Zone Spacing */
-  .guess-zone {
-    margin-top: 25px; 
-    text-align: center;
-    background: transparent !important;
-  }
-
-  /* Elegant white button container - Inherited from Contact Style */
-  .guess-zone .button--primary {
-    display: inline-flex !important; /* Forces layout to calculate precise inner dimension centers */
-    align-items: center;            /* Vertically centers text inside the button */
-    justify-content: center;        /* Horizontally centers text inside the button */
-    text-align: center;
-    
-    position: relative;
-    top: -5px;                      /* Matches the slight lift of the contact button */
-    
-    background: #ffffff !important;
-    color: #8a052b !important;
-    padding: 12px 35px;
-    height: 46px;                   /* Explicit height bounding ensures exact vertical text alignment */
-    min-width: 260px;               /* Keeps cross-browser width perfectly uniform */
-    font-size: 1rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    
-    /* Inherited System Resets & Clear Deep Drop Shadows from Contact Button */
-    border: 0px none transparent !important;
-    outline: 0px none transparent !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important; 
-    border-radius: 30px !important;
-    
-    cursor: pointer;
-    user-select: none;
-    transition: all 0.25s ease-in-out;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Interactive hover adjustments matching Contact Form feedback */
-  .guess-zone .button--primary:hover {
-    background: #e05275 !important;
-    color: #ffffff !important;
-    transform: translateY(-2px) scale(1.03); /* Exact contact hover translation */
-    box-shadow: 0 6px 25px rgba(224, 82, 117, 0.6) !important;
-    border: 0px none transparent !important;
-    outline: 0px none transparent !important;
-  }
-
-  .guess-zone .button--primary:active {
-    transform: translateY(0px) scale(0.98);
-  }
-
-  /* Responsive Fallback View for tablets/mobile screens */
-  @media (max-width: 850px) {
+  /* Responsive Fallback View */
+  @media (max-width: 950px) {
     .mystery-split-layout {
       flex-direction: column;
     }
@@ -404,6 +580,9 @@
 document.addEventListener("DOMContentLoaded", function() {
   const JSON_URL = "https://raw.githubusercontent.com/TomorrowQuantArchive/Test/main/mysteries.json";
   const today = new Date().toISOString().split('T')[0];
+
+  const settingsEl = document.getElementById('shopify-settings-data');
+  const configuredTemptText = settingsEl ? settingsEl.getAttribute('data-tempt-text') : '';
 
   fetch(JSON_URL)
     .then(response => response.json())
@@ -426,18 +605,64 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     document.getElementById('mystery-story').innerText = caseData.story;
 
-    // Render Suspects
+    // 1. Render Suspects (Stacked vertically)
     const suspectsContainer = document.getElementById('suspects-container');
-    suspectsContainer.innerHTML = caseData.suspects.map(suspect => `
-      <div class="suspect-card">
-        <h4><strong>${suspect.name}</strong></h4>
-        <p><small>Relation: ${suspect.relation}</small></p>
-        <p><small>Phone: ${suspect.phone}</small></p>
-        <p>${suspect.bio}</p>
-      </div>
-    `).join('');
+    suspectsContainer.innerHTML = caseData.suspects.map(suspect => {
+      const avatarUrl = suspect.image || 'https://placehold.co/100x100/4d0014/ffffff?text=❤️';
+      const height = suspect.height || 'Unknown Height';
+      const astroSign = suspect.astrological_sign || suspect.sign || 'Zodiac Unknown';
+      const relation = suspect.relation || 'Suspect';
 
-    // Render Matrix Table Grid
+      return `
+        <div class="suspect-card">
+          <div class="suspect-header">
+            <img src="${avatarUrl}" alt="${suspect.name}" class="suspect-avatar" onerror="this.src='https://placehold.co/100x100/4d0014/ffffff?text=❤️'">
+            <h4><strong>${suspect.name}</strong></h4>
+          </div>
+          <p class="suspect-bio">${suspect.bio || ''}</p>
+          <div class="suspect-meta">
+            <span>${height}</span>
+            <span class="meta-divider">|</span>
+            <span>${astroSign}</span>
+            <span class="meta-divider">|</span>
+            <span class="suspect-relation-badge">${relation}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // 2. Render Locations (Stacked vertically as simpler, elegant cards below)
+    const locationsContainer = document.getElementById('locations-container');
+    if (caseData.matrix && caseData.matrix.locations) {
+      locationsContainer.innerHTML = caseData.matrix.locations.map(location => `
+        <div class="location-card">
+          <div class="location-card-title">📍 ${location}</div>
+          <p class="location-card-desc">Could the dramatic events have taken place here? Mark alignments on the matrix panel.</p>
+        </div>
+      `).join('');
+    }
+
+    // 3. Render Motives (Stacked vertically)
+    const motivesContainer = document.getElementById('motives-container');
+    if (caseData.matrix && caseData.matrix.motives) {
+      motivesContainer.innerHTML = caseData.matrix.motives.map(motive => `
+        <div class="motive-card">
+          <div class="motive-card-title">💭 "${motive}"</div>
+          <p class="motive-card-desc">Was this the driving intent of the heartbreak? Probe deeper into suspect links.</p>
+        </div>
+      `).join('');
+    }
+
+    // 4. Render Dynamic Clues if available in JSON, otherwise preserve default mockup
+    if (caseData.clues && caseData.clues.length > 0) {
+      const cluesList = document.getElementById('clues-list');
+      cluesList.innerHTML = caseData.clues.map((clue, idx) => {
+        const isRed = clue.toLowerCase().includes('poison') || clue.toLowerCase().includes('blowfish') || clue.toLowerCase().includes('murder');
+        return `<li class="${isRed ? 'red-clue' : ''}">${clue}</li>`;
+      }).join('');
+    }
+
+    // 5. Render Matrix Table Grid
     const matrixTable = document.getElementById('matrix-table');
     let tableHTML = `<tr><th>Suspect / Clue</th>`;
     
@@ -468,10 +693,9 @@ document.addEventListener("DOMContentLoaded", function() {
     matrixTable.innerHTML = tableHTML;
     
     bindMatrixInteraction();
-    bindSubmitAction(caseData);
+    bindSubmitAction(caseData, configuredTemptText);
   }
 
-  // Pure sandbox mode interaction loop
   function bindMatrixInteraction() {
     const buttons = document.querySelectorAll('.matrix-cell-btn');
     
@@ -483,22 +707,18 @@ document.addEventListener("DOMContentLoaded", function() {
       }
 
       btn.addEventListener('click', function(e) {
-        // State Machine Loop: Blank (•) -> Match (❤️) -> Eliminate (❌) -> Reset (•)
         if (!this.classList.contains('state-correct') && !this.classList.contains('state-wrong')) {
-          // Change to Match
           this.classList.add('state-correct');
           this.innerHTML = '❤️';
           localStorage.setItem(this.id, 'state-correct');
           spawnHeartEffect(e.clientX, e.clientY, '❤️');
         } else if (this.classList.contains('state-correct')) {
-          // Change to Eliminate
           this.classList.remove('state-correct');
           this.classList.add('state-wrong');
           this.innerHTML = '❌';
           localStorage.setItem(this.id, 'state-wrong');
           spawnHeartEffect(e.clientX, e.clientY, '❌');
         } else {
-          // Reset to Blank
           this.classList.remove('state-wrong');
           this.innerHTML = '•';
           localStorage.removeItem(this.id);
@@ -507,17 +727,40 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
- // Helper to trigger the beautiful romantic custom popup
-  function showRomanticModal(title, message, icon) {
+  function showRomanticModal(title, message, icon, scoreDetails = null, temptText = '') {
     const modal = document.getElementById('mystery-modal');
+    const scoreContainer = document.getElementById('modal-score-container');
+    const temptTextEl = document.getElementById('modal-temptation-text');
+    
     document.getElementById('modal-title').innerText = title;
     document.getElementById('modal-message').innerText = message;
     document.getElementById('modal-icon').innerText = icon;
+
+    if (temptText) {
+      temptTextEl.innerText = temptText;
+      temptTextEl.style.display = 'block';
+    } else {
+      temptTextEl.style.display = 'none';
+    }
+
+    if (scoreDetails) {
+      document.getElementById('modal-score-percentage').innerText = `${scoreDetails.percentage}%`;
+      
+      const culpritSpan = document.querySelector('#check-culprit span');
+      const motiveSpan = document.querySelector('#check-motive span');
+      const locationSpan = document.querySelector('#check-location span');
+
+      culpritSpan.innerText = scoreDetails.culpritCorrect ? '❤️' : '❌';
+      motiveSpan.innerText = scoreDetails.motiveCorrect ? '❤️' : '❌';
+      locationSpan.innerText = scoreDetails.locationCorrect ? '❤️' : '❌';
+
+      scoreContainer.style.display = 'block';
+    } else {
+      scoreContainer.style.display = 'none';
+    }
     
-    // Animate view appearance toggle
     modal.classList.add('is-active');
 
-    // Setup close callback trigger
     const closeBtn = document.getElementById('modal-close-btn');
     const closeModalClosure = () => {
       modal.classList.remove('is-active');
@@ -526,7 +769,7 @@ document.addEventListener("DOMContentLoaded", function() {
     closeBtn.addEventListener('click', closeModalClosure);
   }
 
-  function bindSubmitAction(caseData) {
+  function bindSubmitAction(caseData, temptText) {
     const submitBtn = document.getElementById('submit-guess');
     if (!submitBtn) return;
 
@@ -540,9 +783,14 @@ document.addEventListener("DOMContentLoaded", function() {
       const targetMotive = caseData.solution.motive;
       const targetLocation = caseData.solution.location;
 
-      let foundMotiveMatch = false;
-      let foundLocationMatch = false;
       let hasIncorrectHearts = false;
+      
+      let scoreDetails = {
+        culpritCorrect: false,
+        motiveCorrect: false,
+        locationCorrect: false,
+        percentage: 0
+      };
 
       const buttons = document.querySelectorAll('.matrix-cell-btn');
       
@@ -552,24 +800,42 @@ document.addEventListener("DOMContentLoaded", function() {
         const isMarkedCorrect = btn.classList.contains('state-correct');
 
         if (isMarkedCorrect) {
-          if (suspect === targetCulprit && value === targetMotive) {
-            foundMotiveMatch = true;
-          } else if (suspect === targetCulprit && value === targetLocation) {
-            foundLocationMatch = true;
+          if (suspect === targetCulprit) {
+            if (value === targetMotive) {
+              scoreDetails.motiveCorrect = true;
+            } else if (value === targetLocation) {
+              scoreDetails.locationCorrect = true;
+            } else {
+              hasIncorrectHearts = true;
+            }
           } else {
             hasIncorrectHearts = true;
           }
         }
       });
 
-      const matrixIsPerfect = foundMotiveMatch && foundLocationMatch && !hasIncorrectHearts;
+      if (scoreDetails.motiveCorrect || scoreDetails.locationCorrect) {
+        scoreDetails.culpritCorrect = true;
+      }
+
+      let matchesCount = 0;
+      if (scoreDetails.culpritCorrect) matchesCount++;
+      if (scoreDetails.motiveCorrect) matchesCount++;
+      if (scoreDetails.locationCorrect) matchesCount++;
+
+      if (hasIncorrectHearts) {
+        scoreDetails.percentage = Math.max(0, Math.round((matchesCount / 3) * 100) - 15);
+      } else {
+        scoreDetails.percentage = Math.round((matchesCount / 3) * 100);
+      }
+
+      const matrixIsPerfect = scoreDetails.motiveCorrect && scoreDetails.locationCorrect && !hasIncorrectHearts;
 
       const rect = submitBtn.getBoundingClientRect();
       const btnX = rect.left + rect.width / 2;
       const btnY = rect.top + rect.height / 2;
 
       if (matrixIsPerfect) {
-        // Visual celebratory particle explosion loops
         for (let i = 0; i < 25; i++) {
           setTimeout(() => {
             const driftX = btnX + (Math.random() * 200 - 100);
@@ -578,7 +844,6 @@ document.addEventListener("DOMContentLoaded", function() {
           }, i * 40);
         }
         
-        // Launch custom Success Window after particle delay burst
         setTimeout(() => {
           showRomanticModal(
             "Case Solved! ❤️", 
@@ -590,11 +855,12 @@ document.addEventListener("DOMContentLoaded", function() {
       } else {
         spawnHeartEffect(btnX, btnY, '💔');
         
-        // Launch custom Mistake/Failure Window
         showRomanticModal(
           "A Broken Heart... 💔", 
           "The final accusation fails. Some of your alignments contradict the case records, or critical connections are still blank. Review your clues and try again!", 
-          "💔"
+          "💔",
+          scoreDetails,
+          temptText
         );
       }
     });
@@ -616,7 +882,15 @@ document.addEventListener("DOMContentLoaded", function() {
 {% schema %}
 {
   "name": "Daily Mystery Hero",
-  "settings": [],
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "temptation_text",
+      "label": "Temptation Message (Wrong Guesses)",
+      "default": "Are you going to let them get away with a broken heart? Look closer at the details—your true lover's instinct is waiting to shine!",
+      "placeholder": "Enter words to tease, challenge, and motivate incorrect guessers here."
+    }
+  ],
   "presets": [
     {
       "name": "Daily Mystery Hero"
